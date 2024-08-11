@@ -21,8 +21,6 @@ public class ProductsController : ControllerBase
         _productRepository = productRepository;
     }
 
-    [HttpPost("error")]
-    public ActionResult GetError(CreateProductDTO dto) => Ok();
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecParams specParams) 

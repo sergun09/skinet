@@ -1,0 +1,17 @@
+<div class="mt-5 flex justify-center gap-4">
+    <button mat-stroked-button (click)="get400()">BadRequest error</button>
+    <button mat-stroked-button (click)="get400ValidationError()">Valdiation error</button>
+    <button mat-stroked-button (click)="get404()">Not Found Error</button>
+    <button mat-stroked-button (click)="get401()">Unauthorized Error</button>
+    <button mat-stroked-button (click)="get500()">Internal Serveur</button>
+</div>
+
+@if (validationErrors) {
+    <div class="mx-auto max-w-lg mt-5 bg-red-100">
+        <ul class="space-y-2 p-2">
+            @for (error of validationErrors; track $index) {
+                <li class="text-red-800">{{error}}</li>
+            }
+        </ul>
+    </div>
+}

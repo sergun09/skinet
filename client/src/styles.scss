@@ -31,3 +31,15 @@ $customTheme: mat.define-theme();
 .mdc-notched-outline__notch{
     border-right-style: none !important;
 }
+
+.mat-mdc-snack-bar-container.snack-error{
+    --mdc-snackbar-container-color: red;
+    --mdc-mat-snack-bar-button-color: white;
+    --mdc-snackbar-supporting-text-color: white;
+}
+
+.mat-mdc-snack-bar-container.snack-success{
+    --mdc-snackbar-container-color: green;
+    --mdc-mat-snack-bar-button-color: white;
+    --mdc-snackbar-supporting-text-color: white;
+}
