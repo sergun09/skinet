@@ -1,12 +1,14 @@
 ﻿using Core.Entities;
 using Infrastructure.Config;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
-public class StoreContext : DbContext
+public class StoreContext : IdentityDbContext<AppUser>
 {
     public DbSet<Product> Products { get; set; }
+    public DbSet<Adress> Adresses { get; set; }
     public StoreContext(DbContextOptions options) : base(options)
     { 
     }

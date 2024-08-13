@@ -1,3 +1,4 @@
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure;
 using Infrastructure.Data;
@@ -32,6 +33,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<StoreContext>();
 
 var app = builder.Build();
 
@@ -42,11 +45,11 @@ if (app.Environment.IsDevelopment())
 {
 }
 
-app.UseAuthorization();
-
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200","http://localhost:4200"));
+app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:4200","http://localhost:4200"));
 
 app.MapControllers();
+
+app.MapGroup("api").MapIdentityApi<AppUser>();
 
 try 
 {

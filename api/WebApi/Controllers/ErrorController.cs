@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebApi.Dtos;
 
 namespace WebApi.Controllers
@@ -34,6 +36,15 @@ namespace WebApi.Controllers
         [HttpPost("validationerror")]
         public ActionResult GetError(CreateProductDTO dto) {
             return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("secret")]
+        public IActionResult GetSecret()
+        {
+            var name = User.FindFirst(ClaimTypes.Name)?.Value;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Ok($"Test du User connecté {name}, {id}");
         }
     }
 }
