@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
 using System.Security.Claims;
 
-namespace WebApi.Extrensions;
+namespace WebApi.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

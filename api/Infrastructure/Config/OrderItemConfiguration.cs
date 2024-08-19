@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Config
 {
-    internal class DeliveryMethodeConfiguration : IEntityTypeConfiguration<DeliveryMethod>
+    internal class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
-        public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
+
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
+            builder.OwnsOne(x => x.ItemOrdered, o => o.WithOwner());
             builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
         }
     }

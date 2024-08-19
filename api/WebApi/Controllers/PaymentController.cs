@@ -1,7 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -11,12 +10,12 @@ namespace WebApi.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
-        private readonly IGenericRepository<DeliveryMethod> _deliveryMethodRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentController(IPaymentService paymentService, IGenericRepository<DeliveryMethod> deliveryMethod)
+        public PaymentController(IPaymentService paymentService, IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
-            _deliveryMethodRepository = deliveryMethod;
+            _unitOfWork = unitOfWork;
         }
 
         [Authorize]
@@ -33,7 +32,7 @@ namespace WebApi.Controllers
         [HttpGet("delivery-methods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return Ok(await _deliveryMethodRepository.GetAllAsync());
+            return Ok(await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync());
         }
 
     }

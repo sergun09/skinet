@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace WebApi.Middlewares;
 

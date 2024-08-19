@@ -1,13 +1,10 @@
 ﻿using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Authentication;
-using System.Security.Claims;
 using WebApi.Dtos;
-using WebApi.Extrensions;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers;
 

@@ -19,6 +19,10 @@ public class BaseSpecification<T> : ISpecification<T>
 
     public bool IsPagningEnabled {  get; private set; }
 
+    public List<Expression<Func<T, object>>> Includes { get; } = new();
+
+    public List<string> IncludesStrings { get; } = [];
+
     public BaseSpecification(Expression<Func<T, bool>> criteria)
     {
         Criteria = criteria;
@@ -35,6 +39,16 @@ public class BaseSpecification<T> : ISpecification<T>
         Skip = skip;
         Take = take;
         IsPagningEnabled = true;
+    }
+
+    protected void AddInclude(Expression<Func<T, object>> includeExpression)  
+    {
+        Includes.Add(includeExpression);
+    }
+
+    protected void AddIncludeString(string includeStrings)
+    {
+        IncludesStrings.Add(includeStrings);
     }
 
     public IQueryable<T> ApplyCriteria(IQueryable<T> query)

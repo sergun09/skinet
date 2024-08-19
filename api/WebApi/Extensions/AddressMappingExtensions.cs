@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
 using WebApi.Dtos;
 
-namespace WebApi.Extrensions;
+namespace WebApi.Extensions;
 
 public static class AddressMappingExtensions
 {

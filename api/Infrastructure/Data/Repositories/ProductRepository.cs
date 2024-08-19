@@ -66,11 +66,6 @@ public class ProductRepository : IProductRepository
             .ToListAsync();
     }
 
-    public async Task<bool> SaveChangesAsync()
-    {
-        return await _context.SaveChangesAsync() > 0;
-    }
-
     public void UpdateProduct(Product product)
     {
         _context.Products.Update(product);

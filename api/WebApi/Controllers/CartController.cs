@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
@@ -15,7 +14,7 @@ namespace WebApi.Controllers
         {
             _cartService = cartService;
         }
-
+        
         [HttpGet]
         public async Task<ActionResult<ShoppingCart>> GetCartById(string id)
         {
