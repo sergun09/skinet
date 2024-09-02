@@ -62,7 +62,7 @@ export class ProductDetailsComponent implements OnInit{
     } else{
       const itemsToRemove = this.quantityInCart - this.quantity;
       this.quantityInCart += itemsToRemove;
-      this.cartService.removeItemFromCart(this.product.id, itemsToRemove)
+      this.cartService.removeItemFromCart(this.product.id!, itemsToRemove)
     }
   }
 }

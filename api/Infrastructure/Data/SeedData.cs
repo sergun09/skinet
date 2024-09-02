@@ -1,12 +1,28 @@
 ﻿using Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
 
 namespace Infrastructure.Data;
 
 public class SeedData
 {
-    public static async Task SeedAsync(StoreContext context) 
+    public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager) 
     {
+
+        if(!userManager.Users.Any(x => x.UserName == "admin@test.com"))
+        {
+            var user = new AppUser()
+            {
+                UserName = "admin@test.com",
+                Email = "admin@test.com",
+            };
+
+            await userManager.CreateAsync(user, "Password123!");
+            await userManager.AddToRoleAsync(user, "Admin");
+            await context.SaveChangesAsync();
+        }
+
+
         if(!context.Products.Any()) 
         {
             var productsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/products.json");

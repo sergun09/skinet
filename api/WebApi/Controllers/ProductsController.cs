@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.RequestHelpers;
 
@@ -63,6 +64,7 @@ public class ProductsController : ControllerBase
         return Ok(product);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
     {
@@ -74,6 +76,7 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { product.Id }, product);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateProduct([FromBody] Product product, int id)
     {
@@ -88,6 +91,7 @@ public class ProductsController : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteProduct(int id)
     {
@@ -97,7 +101,7 @@ public class ProductsController : ControllerBase
 
         _unitOfWork.Repository<Product>().Delete(product);
 
-        if(!await _unitOfWork.SaveChanges()) return BadRequest("Problème lors de la mise à jour d'un produit");
+        if(!await _unitOfWork.SaveChanges()) return BadRequest("Problème lors de la suppresion d'un produit");
 
         return Ok();
     }

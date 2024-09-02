@@ -1,0 +1,39 @@
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="bg-gray-200">
+    <mat-form-field appearance="fill">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="name" required value="{{product.name}}">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" required value="{{product.description}}"></textarea>
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Prix</mat-label>
+      <input matInput type="number" formControlName="price" required value="{{product.price}}">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>URL de l'image</mat-label>
+      <input matInput formControlName="pictureUrl" required value="{{product.pictureUrl}}">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Marque</mat-label>
+      <input matInput formControlName="brand" required value="{{product.brand}}">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Type</mat-label>
+      <input matInput formControlName="type" required value="{{product.type}}">
+    </mat-form-field>
+  
+    <mat-form-field appearance="fill">
+      <mat-label>Quantité en stock</mat-label>
+      <input matInput type="number" formControlName="quantityInStock" required value="{{product.quantityInStock}}">
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" type="submit">{{buttonText}}</button>
+  </form>
+  

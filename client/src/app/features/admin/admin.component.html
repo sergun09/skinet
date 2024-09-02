@@ -1,0 +1,137 @@
+<div class="min-h-screen">
+    <mat-tab-group class="bg-gray-200">
+        <mat-tab label="Commandes">
+            <div class="flex justify-between items-center mt-2 max-w-screen-2xl mx-auto px-5">
+                <h2 class="text-xl font-semibold">Commandes clients</h2>
+                <mat-paginator class="bg-gray-200" (page)="onPageChange($event)" [pageSizeOptions]="[5,10,15]" [length]="totalItems" [pageSize]="orderParams.pageSize" showFirstLastButtons="true"></mat-paginator>
+                <mat-form-field appearance="outline" class="mt-2">
+                    <mat-label>Filtrer par statut</mat-label>
+                    <mat-select (selectionChange)="onFilterSelect($event)">
+                        @for (statut of statusOptions; track $index) {
+                            <mat-option [value]="statut">{{statut}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <div class="p-4">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                    <!--- Note that these columns can be defined in any order.
+                          The actual rendered columns are set as a property on the row definition" -->
+                  
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="Id">
+                      <th mat-header-cell *matHeaderCellDef> No. </th>
+                      <td mat-cell *matCellDef="let order"> {{order.id}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Email de l'acheteur">
+                        <th mat-header-cell *matHeaderCellDef> Acheteur </th>
+                        <td mat-cell *matCellDef="let order"> {{order.buyerEmail}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Date Commande">
+                        <th mat-header-cell *matHeaderCellDef> Date Commande </th>
+                        <td mat-cell *matCellDef="let order"> {{order.orderDate | date: 'short'}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Total">
+                        <th mat-header-cell *matHeaderCellDef> Total </th>
+                        <td mat-cell *matCellDef="let order"> {{order.total | currency}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Statut">
+                        <th mat-header-cell *matHeaderCellDef> Statut </th>
+                        <td mat-cell *matCellDef="let order"> {{order.orderStatus}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let order">
+                            <div class="flex gap-2">
+                                <button matTooltip="Détail" mat-icon-button routerLink="/orders/{{order.id}}">
+                                    <mat-icon color="accent">visibility</mat-icon>
+                                </button>
+                                <button [disabled]="order.orderStatus === 'Refunded'" (click)="refundOrder(order.id)" matTooltip="Remboursement">
+                                    <mat-icon color="warn">undo</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                  
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                </table>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Produits">
+            <div class="flex justify-between items-center mt-2 max-w-screen-2xl mx-auto px-5">
+                <h2 class="text-xl font-semibold">Liste des produits</h2>
+                <mat-paginator class="bg-gray-200" (page)="onPageChangeProduct($event)" [pageSizeOptions]="[5,10,15]" [length]="totalProductItems" [pageSize]="shopParams.pageSize" showFirstLastButtons="true"></mat-paginator>
+                <button mat-flat-button routerLink="/product/upsert">Ajouter un produit</button>
+            </div>
+
+            <div class="p-4">   
+                <table mat-table [dataSource]="dataSourceProduct" class="mat-elevation-z8">
+
+                    <!--- Note that these columns can be defined in any order.
+                          The actual rendered columns are set as a property on the row definition" -->
+                  
+                    <!-- Position Column -->
+                    <ng-container matColumnDef="Id">
+                      <th mat-header-cell *matHeaderCellDef> No. </th>
+                      <td mat-cell *matCellDef="let product"> {{product.id}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Nom">
+                        <th mat-header-cell *matHeaderCellDef>Nom du produit</th>
+                        <td mat-cell *matCellDef="let product"> {{product.name}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Prix">
+                        <th mat-header-cell *matHeaderCellDef>Prix</th>
+                        <td mat-cell *matCellDef="let product"> {{product.price | currency }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Type">
+                        <th mat-header-cell *matHeaderCellDef>Type</th>
+                        <td mat-cell *matCellDef="let product"> {{product.type}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Marque">
+                        <th mat-header-cell *matHeaderCellDef>Marque</th>
+                        <td mat-cell *matCellDef="let product"> {{product.brand}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Quantité">
+                        <th mat-header-cell *matHeaderCellDef>Quantité en stock</th>
+                        <td mat-cell *matCellDef="let product"> {{product.quantityInStock}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let product">
+                            <div class="flex gap-2">
+                                <button matTooltip="Détail" mat-icon-button routerLink="/shop/{{product.id}}">
+                                    <mat-icon color="accent">visibility</mat-icon>
+                                </button>
+                                <button (click)="openConfirmDialogProductDelete(product.id)" matTooltip="Suppresion du produit">
+                                    <mat-icon color="warn">delete</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+                  
+                  
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsProduct"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsProduct;"></tr>
+
+                </table>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

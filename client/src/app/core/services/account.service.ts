@@ -1,8 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
-import { environment } from '../../../environments/environment.development';
+import { computed, Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { User, Address } from '../../shared/models/user';
 import { map, tap } from 'rxjs';
+import { SignalrService } from './signalr.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,13 +12,19 @@ export class AccountService {
 
   baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null)
+  isAdmin = computed(() => {
+    const roles = this.currentUser()?.roles;
+    return Array.isArray(roles) ? roles.includes("Admin") : roles === 'Admin';
+  });
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private signalrService: SignalrService) { }
 
   login(infos : any){
     let params = new HttpParams();
     params = params.append('useCookies',true);
-    return this.http.post<User>(this.baseUrl + 'login', infos, {params});
+    return this.http.post<User>(this.baseUrl + 'login', infos, {params}).pipe(
+      tap(() => this.signalrService.createHubConnection())
+    );
   }
 
   register(infos : any){
@@ -34,7 +41,9 @@ export class AccountService {
   }
 
   logout(){
-    return this.http.post(this.baseUrl + 'accounts/logout', {});
+    return this.http.post(this.baseUrl + 'accounts/logout', {}).pipe(
+      tap(() => this.signalrService.stopHubConnection())
+    );
   }
 
   getAuthState(){

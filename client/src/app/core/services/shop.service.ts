@@ -4,13 +4,14 @@ import { Pagination } from '../../shared/models/Pagination';
 import { Product } from '../../shared/models/Product';
 import { Observable } from 'rxjs';
 import { ShopParams } from '../../shared/models/shopParams';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShopService {
 
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
   types: string[] = [];
   brands: string[] = [];
 
@@ -41,6 +42,25 @@ export class ShopService {
   getProduct(id:number)
   {
     return this.http.get<Product>(this.baseUrl + "products/" + id);
+  }
+
+  createProduct(productDto : Product){
+    return this.http.post<Product>(this.baseUrl + "products", productDto)
+  }
+
+  updateProduct(productDto : Product, productId : number){
+    let params = new HttpParams();
+
+    if(!productId && productId == 0)
+      throw new Error("Impossible de mettre un jour un produit qui n'existe pas")
+
+    params.append("id", productId);
+    return this.http.put<Product>(this.baseUrl + "products", productDto, {params})
+  }
+
+  deleteProduct(id:number)
+  {
+    return this.http.delete(this.baseUrl + "products/" + id);
   }
 
   getBrands() 

@@ -16,12 +16,11 @@ namespace Infrastructure.Services
             _configuration = configuration;
             _cartService = cartService;
             _unitOfWork = unitOfWork;
+            StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
         }
 
         public async Task<ShoppingCart?> CreateOrUpdatePaymentIntent(string cartId)
         {
-            StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
-
             var cart = await _cartService.GetCartAsync(cartId);
 
             if (cart is null) return null;
@@ -78,6 +77,19 @@ namespace Infrastructure.Services
             await _cartService.SetCartAsync(cart);
 
             return cart;
+        }
+
+        public async Task<string> RefundPayment(string paymentIntentId)
+        {
+            var refundOptions = new RefundCreateOptions()
+            {
+                PaymentIntent = paymentIntentId
+            };
+
+            var refundService = new RefundService();
+            var result = await refundService.CreateAsync(refundOptions);
+
+            return result.Status;  
         }
     }
 }

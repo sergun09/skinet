@@ -4,9 +4,12 @@ using Infrastructure;
 using Infrastructure.Data;
 using Infrastructure.Data.Repositories;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
+using WebApi.Extensions;
 using WebApi.Middlewares;
+using WebApi.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +23,12 @@ builder.Services.AddDbContext<StoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 builder.Services.AddScoped<IProductRepository,ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 builder.Services.AddScoped<IPaymentService,PaymentService>();
+builder.Services.AddSignalR();
 builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddCors();
 
@@ -37,10 +42,15 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 
 builder.Services.AddSingleton<ICartService, CartService>();
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<AppUser>().AddEntityFrameworkStores<StoreContext>();
+
+builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StoreContext>();
+
+
+
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
@@ -51,21 +61,22 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:4200", "http://localhost:4200"));
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>();
 
-try 
-{
-    using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
-    await context.Database.MigrateAsync();
-    await SeedData.SeedAsync(context);
-}
-catch(Exception ex) 
-{
-    Console.WriteLine(ex.ToString());
-    throw;
-}
+app.MapHub<NotificationHub>("/hub/notifications");
+
+/*app.MapFallbackToController("Index", "Fallback");*/
+
+await app.MigrateAsync();
 
 app.Run();
+
+public partial class Program { }

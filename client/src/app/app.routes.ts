@@ -12,6 +12,12 @@ import { RegisterComponent } from './features/account/register/register.componen
 import { authGuard } from './core/guards/auth.guard';
 import { emptyCartGuard } from './core/guards/empty-cart.guard';
 import { CheckoutSuccessComponent } from './features/checkout/checkout-success/checkout-success.component';
+import { OrderComponent } from './features/orders/order.component';
+import { OrderDetailedComponent } from './features/orders/order-detailed/order-detailed.component';
+import { orderCompleteGuard } from './core/guards/order-complete.guard';
+import { AdminComponent } from './features/admin/admin.component';
+import { adminGuard } from './core/guards/admin.guard';
+import { ProductUpsertComponent } from './features/admin/product-upsert/product-upsert.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -19,11 +25,16 @@ export const routes: Routes = [
     {path: 'shop/:id', component: ProductDetailsComponent},
     {path: 'cart', component: CartComponent},
     {path: 'checkout', component: CheckoutComponent, canActivate:[authGuard,emptyCartGuard]},
-    {path: 'checkout/success', component: CheckoutSuccessComponent, canActivate:[authGuard]},
+    {path: 'checkout/success', component: CheckoutSuccessComponent, canActivate:[authGuard,orderCompleteGuard]},
+    {path: 'orders', component: OrderComponent, canActivate:[authGuard]},
+    {path: 'orders/:id', component: OrderDetailedComponent, canActivate:[authGuard]},
     {path: 'account/login', component: LoginComponent},
     {path: 'account/register', component: RegisterComponent},
     {path: 'test-error', component: TestErrorComponent},
     {path: 'not-found', component: NotFoundComponent},
     {path: 'server-error', component: ServerErrorComponent},
+    {path: 'admin', component: AdminComponent, canActivate:[adminGuard]},
+    {path: 'admin/product/upsert', component: ProductUpsertComponent, canActivate:[adminGuard]},
+    {path: 'admin/product/upsert/:id', component: ProductUpsertComponent, canActivate:[adminGuard]},
     {path: '**', redirectTo:'not-found', pathMatch:'full'}
 ];

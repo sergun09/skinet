@@ -1,27 +1,43 @@
-<section class="bg-gray-100 py-16">
+<section class="bg-gray-100 py-16" *ngIf="signalrService.orderSignal() as order">
     <div class="mx-auto max-w-2xl px-4">
         <h2 class="font-semibold mb-2">Commande passée ! Merci !</h2>
-        <p class="text-gray-500 mb-8">Votre commande <span class="font-medium">#32</span></p>
+        <p class="text-gray-500 mb-8">Votre commande <span class="font-medium">#{{order.id}}</span></p>
         <div class="space-y-2 rounded-lg border-gray-300 bg-gray-50 p-6 mb-8">
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Date</dt>
-                <dd class="font-medium text-gray-900 text-end">20 Oct 1991</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.orderDate | date:"medium"}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Méthode de paiement</dt>
-                <dd class="font-medium text-gray-900 text-end">Visa</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.paymentSummary | payment}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Addresse</dt>
-                <dd class="font-medium text-gray-900 text-end">64 Rue des Pommes</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.shippingAddress | address}}</dd>
             </dl>
             <dl class="flex items-center justify-between gap-4">
                 <dt class="font-normal text-gray-500">Montant</dt>
-                <dd class="font-medium text-gray-900 text-end">150</dd>
+                <dd class="font-medium text-gray-900 text-end">{{order.total}}</dd>
             </dl>
         </div>
         <div class="flex items-center space-x-4">
-            <button routerLink="/orders/42" mat-flat-button>Voir votre commande</button>
+            <button routerLink="/orders/{{order.id}}" mat-flat-button>Voir votre commande</button>
+            <button routerLink="/shop" mat-stroked-button>Continuer vos achats</button>
+        </div>
+    </div>
+</section>
+
+<section class="bg-gray-100 py-16" *ngIf="!signalrService.orderSignal()">
+    <div class="mx-auto max-w-2xl px-4">
+        <h2 class="font-semibold mb-2">Commande en cours...</h2>
+        <div class="space-y-2 rounded-lg border-gray-300 bg-gray-50 p-6 mb-8">
+            <div class="flex flex-col justify-center items-center">
+                <mat-spinner diameter="30"></mat-spinner>
+                <p class="text-xl">Chargement...</p>
+                <span>Votre paiement a été recu. La préparation de votre command est en cours ! </span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
             <button routerLink="/shop" mat-stroked-button>Continuer vos achats</button>
         </div>
     </div>

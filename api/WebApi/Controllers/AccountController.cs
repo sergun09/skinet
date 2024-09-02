@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Authentication;
+using System.Security.Claims;
 using WebApi.Dtos;
 using WebApi.Extensions;
 
@@ -72,7 +73,8 @@ public class AccountController : ControllerBase
             user.FirstName,
             user.LastName,
             user.Email,
-            Address = user.Adress?.ToDto()
+            Address = user.Adress?.ToDto(),
+            Roles = User.FindFirstValue(ClaimTypes.Role)
         });
     }
 

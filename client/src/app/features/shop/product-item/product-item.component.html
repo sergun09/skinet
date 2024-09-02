@@ -1,6 +1,13 @@
 @if (product) {
     <mat-card appearance="raised" routerLink="/shop/{{product.id}}" class="product-card">
-        <img src="{{product.pictureUrl}}" alt="image de {{product.name}}">
+        
+        @if (product.pictureUrl.length > 0) 
+        {
+            <img src="{{product.pictureUrl}}" alt="image de {{product.name}}">
+        }
+        @else {
+            <img class="w-full" src="https://placehold.co/1024x1024" alt="image du produit">
+        }
         <mat-card-content class="mt-2">
             <h2 class="text-sm font-semibold uppercase">{{product.name}}</h2>
             <p class="font-light">{{product.price | currency }}</p>
