@@ -5,6 +5,7 @@ import { Product } from '../../shared/models/Product';
 import { Observable } from 'rxjs';
 import { ShopParams } from '../../shared/models/shopParams';
 import { environment } from '../../../environments/environment';
+import { UpsertProductDto } from '../../shared/models/upsertProductDto';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,7 @@ export class ShopService {
     return this.http.get<Product>(this.baseUrl + "products/" + id);
   }
 
-  createProduct(productDto : Product){
+  createProduct(productDto : any){
     return this.http.post<Product>(this.baseUrl + "products", productDto)
   }
 
@@ -66,7 +67,7 @@ export class ShopService {
   getBrands() 
   {
     if(this.brands.length != 0) 
-      return;
+      return this.brands;
     return this.http.get<string[]>(this.baseUrl + "products/brands").subscribe({
       next : response => this.brands = response
     });
@@ -75,7 +76,7 @@ export class ShopService {
   getTypes()
   {
     if(this.types.length != 0) 
-      return;
+      return this.types;
     return this.http.get<string[]>(this.baseUrl + "products/types").subscribe({
       next : response => this.types = response
     });

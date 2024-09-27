@@ -72,7 +72,7 @@
             <div class="flex justify-between items-center mt-2 max-w-screen-2xl mx-auto px-5">
                 <h2 class="text-xl font-semibold">Liste des produits</h2>
                 <mat-paginator class="bg-gray-200" (page)="onPageChangeProduct($event)" [pageSizeOptions]="[5,10,15]" [length]="totalProductItems" [pageSize]="shopParams.pageSize" showFirstLastButtons="true"></mat-paginator>
-                <button mat-flat-button routerLink="/product/upsert">Ajouter un produit</button>
+                <button mat-flat-button routerLink="/admin/product/upsert">Ajouter un produit</button>
             </div>
 
             <div class="p-4">   
@@ -118,6 +118,9 @@
                             <div class="flex gap-2">
                                 <button matTooltip="Détail" mat-icon-button routerLink="/shop/{{product.id}}">
                                     <mat-icon color="accent">visibility</mat-icon>
+                                </button>
+                                <button matTooltip="Mettre à jour" mat-icon-button routerLink="/admin/product/upsert/{{product.id}}">
+                                    <mat-icon color="accent">edit</mat-icon>
                                 </button>
                                 <button (click)="openConfirmDialogProductDelete(product.id)" matTooltip="Suppresion du produit">
                                     <mat-icon color="warn">delete</mat-icon>

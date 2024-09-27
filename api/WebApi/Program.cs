@@ -47,10 +47,10 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<StoreContext>();
 
-
-
-
 var app = builder.Build();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
@@ -63,9 +63,6 @@ app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrig
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseDefaultFiles();
-app.UseStaticFiles();
 
 app.MapControllers();
 

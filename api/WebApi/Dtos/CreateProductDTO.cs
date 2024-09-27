@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebApi.Dtos;
 
@@ -13,9 +14,6 @@ public class CreateProductDTO
     [Range(0.01,double.MaxValue, ErrorMessage ="Le prix est obligatoire")]
     public decimal Price { get; set; }
     
-    [Required(ErrorMessage = "Une image du produit est obligatoire")]
-    public string PictureUrl { get; set; }
-    
     [Required(ErrorMessage = "La marque du produit est obligatoire")]
     public string Type { get; set; }
     
@@ -24,4 +22,9 @@ public class CreateProductDTO
 
     [Range(1,int.MaxValue,ErrorMessage ="La quantité en stock doit être au minimum de 1")]
     public int QuantityInStock { get; set; }
+
+    [Required]
+    public IFormFile File { get; set; }
+
+    public string? PictureUrl { get; set; }
 }

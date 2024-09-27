@@ -98,7 +98,7 @@ export class CartService {
 
   private mapProductToCartItem(item: Product): CartItem {
     return {
-      productId: item.id,
+      productId: item.id!,
       productName: item.name,
       price: item.price,
       quantity: 0,

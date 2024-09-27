@@ -3,6 +3,7 @@ using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Dtos;
 using WebApi.RequestHelpers;
 
 namespace Api.Controllers;
@@ -12,10 +13,12 @@ namespace Api.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProductsController(IUnitOfWork unitOfWork)
+    public ProductsController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
     {
         _unitOfWork = unitOfWork;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpGet]
@@ -66,14 +69,55 @@ public class ProductsController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct([FromBody] Product product)
+    public async Task<ActionResult<Product>> CreateProduct([FromForm] CreateProductDTO productDto)
     {
-        _unitOfWork.Repository<Product>().Add(product);
+        if (ModelState.IsValid)
+        {
+            if(productDto.File is not null)
+            {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-        if(!await _unitOfWork.SaveChanges())
-            return BadRequest("Problème lors de la création d'un produit");
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(productDto.File.FileName);
+                string productPath = Path.Combine(wwwRootPath, @"images\products");
 
-        return CreatedAtAction(nameof(GetProduct), new { product.Id }, product);
+
+                // Supression de l'image lors d'un update
+                if (!string.IsNullOrEmpty(productDto.PictureUrl))
+                {
+                    var oldImage = Path.Combine(wwwRootPath, productDto.PictureUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImage))
+                        System.IO.File.Delete(oldImage);
+                }
+
+                using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                {
+                    productDto.File.CopyTo(fileStream);
+                }
+
+                Product product = new()
+                {
+                    Name = productDto.Name,
+                    Description = productDto.Description,
+                    Price = productDto.Price,
+                    Brand = productDto.Brand,
+                    Type = productDto.Type,
+                    QuantityInStock = productDto.QuantityInStock,
+                    PictureUrl = @"images\products" + fileName
+                };
+
+                _unitOfWork.Repository<Product>().Add(product);
+
+                if (!await _unitOfWork.SaveChanges())
+                    return BadRequest("Problème lors de la création d'un produit");
+
+                return CreatedAtAction(nameof(GetProduct), new { product.Id }, product);
+
+            }
+            
+        }
+
+        return BadRequest("Problème lors de la création du produit");
     }
 
     [Authorize(Roles = "Admin")]

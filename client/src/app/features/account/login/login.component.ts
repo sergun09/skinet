@@ -23,7 +23,7 @@ export class LoginComponent {
   returnUrl = "/shop"
 
   constructor(){
-    const url = this.activatedRoute.snapshot.queryParams['reuturnUrl'];
+    const url = this.activatedRoute.snapshot.queryParams['returnUrl'];
     if(url) this.returnUrl = url;
   }
 

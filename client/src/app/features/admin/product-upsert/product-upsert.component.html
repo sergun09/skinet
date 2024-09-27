@@ -1,39 +1,77 @@
-<form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="bg-gray-200">
-    <mat-form-field appearance="fill">
-      <mat-label>Nom</mat-label>
-      <input matInput formControlName="name" required value="{{product.name}}">
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description" required value="{{product.description}}"></textarea>
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Prix</mat-label>
-      <input matInput type="number" formControlName="price" required value="{{product.price}}">
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>URL de l'image</mat-label>
-      <input matInput formControlName="pictureUrl" required value="{{product.pictureUrl}}">
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Marque</mat-label>
-      <input matInput formControlName="brand" required value="{{product.brand}}">
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Type</mat-label>
-      <input matInput formControlName="type" required value="{{product.type}}">
-    </mat-form-field>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Quantité en stock</mat-label>
-      <input matInput type="number" formControlName="quantityInStock" required value="{{product.quantityInStock}}">
-    </mat-form-field>
-  
-    <button mat-raised-button color="primary" type="submit">{{buttonText}}</button>
-  </form>
-  
+<mat-card class="max-w-fit mx-auto mt-32 p-8 bg-gray-100">
+    <form [formGroup]="productForm" (submit)="onSubmit()">
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-semibold text-primary">{{buttonText}}</h1>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-full mb-2">
+            <label>Nom du produit</label>
+            <input formControlName="name" type="text" matInput>
+            <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                <small style="color: red;" *ngIf="productForm.get('name')?.hasError('required')">Le nom du produit est obligatoire.</small>
+            </div>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full mb-2">
+            <label>Description du produit</label>
+            <textarea formControlName="description" type="text" matInput></textarea>
+            <div *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+                <small style="color: red;" *ngIf="productForm.get('description')?.hasError('required')">La description est obligatoire.</small>
+                <small style="color: red;" *ngIf="productForm.get('description')?.hasError('minlength')">La description doit faire au moins 20 caractères.</small>
+            </div>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full mb-2">
+            <label>Prix du produit</label>
+            <input formControlName="price" type="number" min="0" matInput>
+            <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+                <small style="color: red;" *ngIf="productForm.get('prix')?.hasError('required')">Le prix est obligatoire.</small>
+            </div>
+        </mat-form-field>
+
+        <div class="flex space-x-4 mb-4">
+            <mat-form-field appearance="outline" class="flex-1">
+                <label>Marque du produit</label>
+                <mat-select formControlName="brand" placeholder="Veuillez choisir une marque">
+                    <mat-option *ngFor="let brand of brands" [value]="brand">
+                        {{brand}}
+                    </mat-option>
+                </mat-select>
+                <div *ngIf="productForm.get('brand')?.invalid && productForm.get('brand')?.touched">
+                    <small style="color: red;" *ngIf="productForm.get('brand')?.hasError('required')">
+                        La marque est obligatoire.
+                    </small>
+                </div>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+                <label>Type du produit</label>
+                <mat-select formControlName="type" placeholder="Veuillez choisir un type">
+                    <mat-option *ngFor="let type of types" [value]="type">
+                        {{type}}
+                    </mat-option>
+                </mat-select>
+                <div *ngIf="productForm.get('type')?.invalid && productForm.get('type')?.touched">
+                    <small style="color: red;" *ngIf="productForm.get('type')?.hasError('required')">
+                        Le type du produit est obligatoire.
+                    </small>
+                </div>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-full">
+            <label>Quantité en stock</label>
+            <input formControlName="quantityInStock" type="number" min="1" matInput>
+            <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                <small style="color: red;" *ngIf="productForm.get('quantityInStock')?.hasError('required')">Le nom du produit est obligatoire.</small>
+            </div>
+        </mat-form-field>
+
+        <div class="my-2">
+            <label for="file">Image du produit</label>
+            <input id="file" type="file" (change)="onFileChange($event)">
+        </div>
+
+        <button [disabled]="productForm.invalid" mat-flat-button type="submit" class="w-full py-2">{{buttonText}}</button>
+    </form>
+</mat-card>
